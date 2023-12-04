@@ -41,4 +41,8 @@ public class Cart {
         }
         return total;
     }
+
+    public int getItemQuantity(Product product) {
+        return items.getOrDefault(product, 0);
+    }
 }

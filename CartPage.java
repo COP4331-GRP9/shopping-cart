@@ -24,6 +24,7 @@ public class CartPage {
 
             JLabel itemLabel = new JLabel(item.name);
             JLabel priceLabel = new JLabel("$" + item.price.toString());
+            JLabel quantityLabel = new JLabel("Qty: " + cart.getItemQuantity(item));
             JButton removeButton = new JButton("Remove");
 
             removeButton.addActionListener(new ActionListener() {
@@ -37,6 +38,7 @@ public class CartPage {
 
             itemPanel.add(itemLabel);
             itemPanel.add(priceLabel);
+            itemPanel.add(quantityLabel);
             itemPanel.add(removeButton);
             panel.add(itemPanel);
         }
