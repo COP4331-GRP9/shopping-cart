@@ -3,6 +3,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Represents a login window for both customers and sellers.
+ * @author Sebastian Vega, Randy Henry
+ */
 public class LoginWindow {
     private JFrame frame;
     private JTextField usernameField;
@@ -10,6 +14,10 @@ public class LoginWindow {
     private JButton customerLoginButton;
     private JButton sellerLoginButton;
 
+    /**
+     * Constructor for the LoginWindow class
+     * Initializes the frame and places the components on the panel
+     */
     public LoginWindow() {
         frame = new JFrame("ShoppingCart");
         frame.setSize(300, 200);
@@ -22,6 +30,10 @@ public class LoginWindow {
         frame.setVisible(true);
     }
 
+    /**
+     * Places components on the panel
+     * @param panel the JPanel on which components are to be placed
+     */
     private void placeComponents(JPanel panel) {
         panel.setLayout(null);
 
@@ -64,6 +76,10 @@ public class LoginWindow {
         });
     }
 
+    /**
+     * Handles the login process
+     * @param isCustomer a boolean indicating whether the user is a customer
+     */
     private void handleLogin(boolean isCustomer) {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -77,16 +93,32 @@ public class LoginWindow {
         }
     }
 
+    /**
+     * Checks if the provided customer credentials are valid
+     * @param username the username of the customer
+     * @param password the password of the customer
+     * @return a boolean indicating whether the credentials are valid
+     */
     private boolean isValidCustomerCredentials(String username, String password) {
         // Placeholder validation logic
         return "t".equals(username) && "t".equals(password);
     }
 
+    /**
+     * Checks if the provided seller credentials are valid
+     * @param username the username of the seller
+     * @param password the password of the seller
+     * @return a boolean indicating whether the credentials are valid
+     */
     private boolean isValidSellerCredentials(String username, String password) {
         // Placeholder validation logic
         return "test2".equals(username) && "test2".equals(password);
     }
 
+    /**
+     * The main method that launches the application
+     * @param args command-line arguments.
+     */
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
