@@ -1,11 +1,24 @@
 public class Product {
-    public String id;
-    public Double price;
     public String name;
+    public Double price;
 
-    Product(String id, Double price, String name) {
-        this.id = id;
+    Product(String name, Double price) {
         this.price = price;
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Product product = (Product) obj;
+        return name.equals(product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

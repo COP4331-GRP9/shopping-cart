@@ -86,7 +86,7 @@ public class ProductPage {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cart.addItem(productName); // Add item to the cart
+                cart.addItem(productName, parseDouble(productPriceStr)); // Add item to the cart
                 JOptionPane.showMessageDialog(frame, productName + " added to cart!");
             }
         });
