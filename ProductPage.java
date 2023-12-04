@@ -1,9 +1,10 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class ProductPage {
     private JFrame frame;
@@ -20,10 +21,7 @@ public class ProductPage {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         frame.add(panel);
 
-        // Example products
-        addProductToPanel(panel, "Product 1", "Description of Product 1");
-        addProductToPanel(panel, "Product 2", "Description of Product 2");
-        // Add more products as needed
+        loadProductsFromCSV(panel, "./products.csv");
 
         // Button to view cart
         JButton viewCartButton = new JButton("View Cart");
@@ -58,5 +56,27 @@ public class ProductPage {
         productPanel.add(descriptionLabel);
         productPanel.add(addButton);
         panel.add(productPanel);
+    }
+
+    private void loadProductsFromCSV(JPanel panel, String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean firstLine = true;
+
+            while ((line = br.readLine()) != null) {
+                // Skip the header line
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String[] values = line.split(",");
+                if (values.length >= 2) {
+                    addProductToPanel(panel, values[0], "$" + values[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
