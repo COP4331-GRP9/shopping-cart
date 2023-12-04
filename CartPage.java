@@ -3,11 +3,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * This class represents the Cart Page in the shopping cart application
+ * It displays the items in the cart, their quantity, and the total price
+ * It also provides the option to remove items from the cart and proceed to checkout
+ */
 public class CartPage {
     private JFrame frame;
     private Cart cart;
     private JButton checkoutButton; // Declare the checkout button as a class member
 
+    /**
+     * Constructor for the CartPage class
+     * Initializes the frame, sets its properties, and adds components to it
+     * @param cart the cart object containing the items to be displayed
+     */
     public CartPage(Cart cart) {
         this.cart = cart;
         frame = new JFrame("Cart");
