@@ -1,5 +1,4 @@
 
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,7 +69,7 @@ public class LoginWindow {
         String password = new String(passwordField.getPassword());
 
         if ((isCustomer && isValidCustomerCredentials(username, password)) ||
-            (!isCustomer && isValidSellerCredentials(username, password))) {
+                (!isCustomer && isValidSellerCredentials(username, password))) {
             frame.dispose(); // Close the login window
             new ProductPage(); // Open the product page
         } else {
@@ -89,6 +88,11 @@ public class LoginWindow {
     }
 
     public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         new LoginWindow();
     }
 }
