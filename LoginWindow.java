@@ -1,6 +1,7 @@
 
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,39 +12,59 @@ public class LoginWindow {
     private JButton loginButton;
 
     public LoginWindow() {
-        frame = new JFrame("ShoppingCart");
-        frame.setSize(300, 200);
+        frame = new JFrame("ebay");
+        frame.setSize(350, 200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Center the frame
 
-        JPanel panel = new JPanel();
+        // Set the icon
+        ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
+        frame.setIconImage(icon.getImage());
+
+        // Set a modern look and feel
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.setBackground(Color.WHITE); // Set a light background
         frame.add(panel);
-        placeComponents(panel);
+
+        placeComponents(panel, gbc);
 
         frame.setVisible(true);
     }
 
-    private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
+    private void placeComponents(JPanel panel, GridBagConstraints gbc) {
+        gbc.insets = new Insets(4, 4, 4, 4); // Margin around components
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        JLabel userLabel = new JLabel("User");
-        userLabel.setBounds(10, 20, 80, 25);
-        panel.add(userLabel);
+        panel.add(new JLabel("Username:"), gbc);
 
+        gbc.gridy++;
         usernameField = new JTextField(20);
-        usernameField.setBounds(100, 20, 165, 25);
-        panel.add(usernameField);
+        panel.add(usernameField, gbc);
 
-        JLabel passwordLabel = new JLabel("Password");
-        passwordLabel.setBounds(10, 50, 80, 25);
-        panel.add(passwordLabel);
+        gbc.gridy++;
+        panel.add(new JLabel("Password:"), gbc);
 
+        gbc.gridy++;
         passwordField = new JPasswordField(20);
-        passwordField.setBounds(100, 50, 165, 25);
-        panel.add(passwordField);
+        panel.add(passwordField, gbc);
 
+        gbc.gridy++;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         loginButton = new JButton("Login");
-        loginButton.setBounds(10, 85, 260, 25);
-        panel.add(loginButton);
+        loginButton.setBackground(new Color(255, 255, 255));
+        loginButton.setForeground(Color.BLACK); // Black text
+        loginButton.setFocusPainted(false);
+        panel.add(loginButton, gbc);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -82,11 +103,6 @@ public class LoginWindow {
     }
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         new LoginWindow();
     }
 }

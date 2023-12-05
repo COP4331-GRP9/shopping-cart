@@ -1,7 +1,5 @@
 
 
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,9 +19,14 @@ public class ProductPage {
 
     public ProductPage(String userRole) {
         this.userRole = userRole; // Initialize the user role
-        frame = new JFrame("Product Page");
+        frame = new JFrame("ebay");
         frame.setSize(600, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Center the frame
+
+        // Set the icon
+        ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
+        frame.setIconImage(icon.getImage());
 
         cart = new Cart(); // Initialize the cart
         productPanels = new HashMap<>();

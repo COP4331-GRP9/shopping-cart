@@ -1,7 +1,6 @@
 
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,9 +12,14 @@ public class AccountPage {
     public AccountPage(String userRole) {
         this.userRole = userRole;
 
-        frame = new JFrame("Account Page");
+        frame = new JFrame("ebay Account");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Center the frame
+
+        // Set the icon
+        ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
+        frame.setIconImage(icon.getImage());
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

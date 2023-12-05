@@ -20,9 +20,14 @@ public class CartPage {
      */
     public CartPage(Cart cart) {
         this.cart = cart;
-        frame = new JFrame("Cart");
+        frame = new JFrame("ebay Cart");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Center the frame
+
+        // Set the icon
+        ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
+        frame.setIconImage(icon.getImage());
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));

@@ -9,7 +9,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,10 +18,15 @@ public class CheckoutPage {
     private Cart cart;
 
     public CheckoutPage(Cart cart) {
-        frame = new JFrame("Checkout");
+        frame = new JFrame("ebay Checkout");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(null); // Center the frame
         this.cart = cart; // Store the cart object
+
+        // Set the icon
+        ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
+        frame.setIconImage(icon.getImage());
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -57,9 +61,15 @@ public class CheckoutPage {
         JTextField cardNumberField = new JTextField(16);
         panel.add(new JLabel("Card Number:"));
         panel.add(cardNumberField);
+        JTextField expDateField = new JTextField(16);
+        panel.add(new JLabel("Exp Date:"));
+        panel.add(expDateField);
+        JTextField cardNumberCVVField = new JTextField(16);
+        panel.add(new JLabel("CVV:"));
+        panel.add(cardNumberCVVField);
 
         // Hard-coded shipping option
-        JLabel shippingOptionLabel = new JLabel("Shipping Option: Standard Delivery (5-7 days)");
+        JLabel shippingOptionLabel = new JLabel("Shipping Option: UPS Ground Delivery (3-5 days)");
         panel.add(shippingOptionLabel);
 
         /**
