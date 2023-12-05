@@ -2,9 +2,18 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Represents a checkout page.
+ * Creates a GUI form with fields for name, email, address, and credit card information
+ * Includes a "Pay Now" button to submit the form
+ */
 public class CheckoutPage {
     private JFrame frame;
 
+    /**
+     * Constructor for the CheckoutPage class
+     * Initializes the frame and adds all the necessary components
+     */
     public CheckoutPage() {
         frame = new JFrame("Checkout");
         frame.setSize(600, 400);
@@ -48,7 +57,12 @@ public class CheckoutPage {
         JLabel shippingOptionLabel = new JLabel("Shipping Option: Standard Delivery (5-7 days)");
         panel.add(shippingOptionLabel);
 
-        // Pay Now Button
+        /**
+         * Creates a "Pay Now" button and adds an action listener to it
+         * When the button is clicked, it checks if all fields are filled and if the card number is numeric
+         * If yes, it shows a message dialog saying "Payment Processed!" and closes the checkout window
+         * If not, it shows a message dialog saying "Please fill all fields correctly."
+         */
         JButton payNowButton = new JButton("Pay Now");
         payNowButton.addActionListener(new ActionListener() {
             @Override
@@ -74,6 +88,11 @@ public class CheckoutPage {
         frame.setVisible(true);
     }
 
+    /**
+     * Checks if all given text fields are filled
+     * @param fields The text fields to check
+     * @return true if all fields are filled, false otherwise
+     */
     private boolean areAllFieldsFilled(JTextField... fields) {
         for (JTextField field : fields) {
             if (field.getText().trim().isEmpty()) {
@@ -83,6 +102,11 @@ public class CheckoutPage {
         return true;
     }
 
+    /**
+     * Checks if a given text is numeric
+     * @param text The text to check
+     * @return true if the text is numeric, false otherwise
+     */
     private boolean isNumeric(String text) {
         try {
             Double.parseDouble(text);
