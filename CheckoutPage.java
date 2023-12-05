@@ -1,23 +1,28 @@
+
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-/**
- * Represents a checkout page.
- * Creates a GUI form with fields for name, email, address, and credit card information
- * Includes a "Pay Now" button to submit the form
- */
+
 public class CheckoutPage {
     private JFrame frame;
+    private Cart cart;
 
-    /**
-     * Constructor for the CheckoutPage class
-     * Initializes the frame and adds all the necessary components
-     */
-    public CheckoutPage() {
+    public CheckoutPage(Cart cart) {
         frame = new JFrame("Checkout");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.cart = cart; // Store the cart object
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -67,20 +72,20 @@ public class CheckoutPage {
         payNowButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (areAllFieldsFilled(
-                        nameField,
-                        emailField,
-                        addressField,
-                        cityField,
-                        stateField,
-                        zipField,
-                        cardNumberField) &&
-                        isNumeric(cardNumberField.getText())) {
-                    JOptionPane.showMessageDialog(frame, "Payment Processed!");
-                    frame.dispose(); // Close the checkout window
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Please fill all fields correctly.");
-                }
+                // Perform validation here
+
+                String itemsPurchased = getItemsPurchased();
+                double totalAmount = getTotalAmount();
+
+                // Generate an order number (could be more sophisticated in a real application)
+                String orderNumber = UUID.randomUUID().toString();
+
+                // Log customer purchase and seller sales
+                logCustomerPurchase(orderNumber, emailField.getText(), itemsPurchased, totalAmount);
+                logSellerSales(orderNumber, emailField.getText(), itemsPurchased, totalAmount);
+
+                JOptionPane.showMessageDialog(frame, "Payment Processed!");
+                frame.dispose();
             }
         });
         panel.add(payNowButton);
@@ -88,31 +93,68 @@ public class CheckoutPage {
         frame.setVisible(true);
     }
 
-    /**
-     * Checks if all given text fields are filled
-     * @param fields The text fields to check
-     * @return true if all fields are filled, false otherwise
-     */
-    private boolean areAllFieldsFilled(JTextField... fields) {
-        for (JTextField field : fields) {
-            if (field.getText().trim().isEmpty()) {
-                return false;
-            }
+    private void logCustomerPurchase(String orderNumber, String email, String items, double totalAmount) {
+        String customerData = orderNumber + "," + email + "," + items + "," + totalAmount + "\n";
+        writeToFile("customer_purchases.csv", customerData);
+    }
+    
+    private void logSellerSales(String orderNumber, String email, String items, double totalAmount) {
+        Map<String, Double> productCosts = readProductCosts();
+        double totalProfit = 0.0;
+    
+        // Split the purchased items to calculate the profit for each
+        String[] purchasedItems = items.split(", ");
+        for (String item : purchasedItems) {
+            String itemName = item.split(" \\(Qty: ")[0]; // Assuming item format is "ItemName (Qty: X)"
+            double sellingPrice = cart.getProductPrice(itemName); // Assuming Cart class has a method to get the price of a product
+            double costPrice = productCosts.getOrDefault(itemName, 0.0);
+            double profit = sellingPrice - costPrice;
+            totalProfit += profit;
         }
-        return true;
+    
+        String sellerData = orderNumber + "," + email + "," + items + "," + totalAmount + "," + totalProfit + "\n";
+        writeToFile("seller_sales.csv", sellerData);
+    }
+      
+
+    private void writeToFile(String fileName, String data) {
+        try (FileWriter fw = new FileWriter(fileName, true); BufferedWriter bw = new BufferedWriter(fw)) {
+            bw.write(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Checks if a given text is numeric
-     * @param text The text to check
-     * @return true if the text is numeric, false otherwise
-     */
-    private boolean isNumeric(String text) {
-        try {
-            Double.parseDouble(text);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+    private String getItemsPurchased() {
+        return cart.getItemsDescription(); // This method needs to be implemented in Cart class
     }
+
+    private double getTotalAmount() {
+        return cart.getTotalAmount(); // This method needs to be implemented in Cart class
+    }
+
+    private Map<String, Double> readProductCosts() {
+        Map<String, Double> productCosts = new HashMap<>();
+        String line;
+        boolean firstLine = true; // Flag to identify the first line (header)
+    
+        try (BufferedReader br = new BufferedReader(new FileReader("products.csv"))) {
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false; // Skip the first line (header)
+                    continue;
+                }
+                String[] values = line.split(",");
+                if (values.length >= 3) {
+                    String productName = values[0];
+                    double costPrice = Double.parseDouble(values[2]); // Fetching cost price from the third column
+                    productCosts.put(productName, costPrice);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return productCosts;
+    }
+    
 }

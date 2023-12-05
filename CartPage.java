@@ -54,17 +54,17 @@ public class CartPage {
         }
 
         // Display total price
-        JLabel totalPriceLabel = new JLabel("Total Price: $" + String.format("%.2f", cart.getTotalPrice()));
+        JLabel totalPriceLabel = new JLabel("Total Price: $" + String.format("%.2f", cart.getTotalAmount()));
         panel.add(totalPriceLabel);
 
         checkoutButton = new JButton("Proceed to Checkout");
         checkoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CheckoutPage(); // Open the checkout page
+                new CheckoutPage(cart); // Pass the cart object to the CheckoutPage
             }
         });
-
+        
         // Disable the checkout button if the cart is empty
         checkoutButton.setEnabled(!cart.getItems().isEmpty());
 

@@ -56,11 +56,30 @@ public class Cart {
         return new ArrayList<>(items.keySet());
     }
 
+    public int getItemQuantity(Product product) {
+        return items.getOrDefault(product, 0);
+    }
+
+    /**
+     * This method returns a string description of items in the cart
+     * @return A string representation of items and their quantities
+     */
+    public String getItemsDescription() {
+        StringBuilder description = new StringBuilder();
+        for (Map.Entry<Product, Integer> entry : items.entrySet()) {
+            description.append(entry.getKey().name)
+                       .append(" (Qty: ")
+                       .append(entry.getValue())
+                       .append("), ");
+        }
+        return description.length() > 0 ? description.substring(0, description.length() - 2) : "";
+    }
+
     /**
      * Gets the total price of items in the cart
      * @return The total price
      */
-    public double getTotalPrice() {
+    public double getTotalAmount() {
         double total = 0;
         for (Map.Entry<Product, Integer> entry : items.entrySet()) {
             total += entry.getKey().price * entry.getValue();
@@ -69,11 +88,16 @@ public class Cart {
     }
 
     /**
-     * Returns the quantity of a specific product in the cart
-     * @param product The product
-     * @return The quantity of the product
+     * This method gets the price of a product by its name
+     * @param productName The name of the product
+     * @return The price of the product or null if the product is not found
      */
-    public int getItemQuantity(Product product) {
-        return items.getOrDefault(product, 0);
+    public Double getProductPrice(String productName) {
+        for (Product product : items.keySet()) {
+            if (product.name.equals(productName)) {
+                return product.price;
+            }
+        }
+        return null; // Return null if product not found
     }
 }

@@ -1,3 +1,5 @@
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,48 +10,56 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * The ProductPage class represents a graphical user interface for displaying
- * a list of products, allowing users to search and add items to a shopping cart
- */
 public class ProductPage {
-    /**
-     * The main frame for the product page
-     */
     private JFrame frame;
-
-    /**
-     * The shopping cart associated with the product page
-     */
     private Cart cart; // Assuming a Cart class exists
+    private Map<String, JPanel> productPanels;
+    private Map<String, Double> productPrices;
+    private String userRole; // Variable to store the user role
 
-    /**
-     * A map to store product names and their corresponding panels
-     */
-    private Map<String, JPanel> productPanels; // Map to store product names and their panels
-
-    /**
-     * A map to store product names and their prices
-     */
-    private Map<String, Double> productPrices; // Map to store product names and their prices
-
-    /**
-     * Constructs a new ProductPage, initializing the frame, cart, and data structures
-     */
-    public ProductPage() {
+    public ProductPage(String userRole) {
+        this.userRole = userRole; // Initialize the user role
         frame = new JFrame("Product Page");
         frame.setSize(600, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         cart = new Cart(); // Initialize the cart
-        productPanels = new HashMap<>(); // Initialize the map
-        productPrices = new HashMap<>(); // Initialize the price map
+        productPanels = new HashMap<>();
+        productPrices = new HashMap<>();
 
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         frame.add(panel);
 
-        // Search field and buttons
+        // Search panel setup
+        setupSearchPanel(panel);
+
+        loadProductsFromCSV(panel, "./products.csv");
+
+        // Button to view cart
+        JButton viewCartButton = new JButton("View Cart");
+        viewCartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CartPage(cart); // Open the cart page
+            }
+        });
+        panel.add(viewCartButton);
+
+        // Account button
+        JButton accountButton = new JButton("Account");
+        accountButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AccountPage(userRole); // Open the account page with the user role
+            }
+        });
+        panel.add(accountButton);
+
+        frame.setVisible(true);
+    }
+
+    private void setupSearchPanel(JPanel panel) {
         JPanel searchPanel = new JPanel();
         JTextField searchField = new JTextField(20);
         JTextField minPriceField = new JTextField(5);
@@ -65,6 +75,10 @@ public class ProductPage {
         searchPanel.add(searchButton);
         panel.add(searchPanel);
 
+        setupSearchButtonListener(searchField, minPriceField, maxPriceField, searchButton);
+    }
+
+    private void setupSearchButtonListener(JTextField searchField, JTextField minPriceField, JTextField maxPriceField, JButton searchButton) {
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,87 +95,54 @@ public class ProductPage {
                 }
             }
         });
-
-        loadProductsFromCSV(panel, "./products.csv");
-
-        // Button to view cart
-        JButton viewCartButton = new JButton("View Cart");
-        viewCartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CartPage(cart); // Open the cart page
-            }
-        });
-        panel.add(viewCartButton);
-
-        frame.setVisible(true);
     }
 
-    /**
-     * Adds a product to the specified panel, creating a panel with product information
-     * Also updates the productPanels and productPrices maps
-     * @param panel            The panel to which the product panel will be added
-     * @param productName      The name of the product
-     * @param productPriceStr  The string representation of the product price
-     */
-    private void addProductToPanel(JPanel panel, String productName, String productPriceStr) {
-        JPanel productPanel = new JPanel();
-        productPanel.setLayout(new FlowLayout());
-
-        JLabel nameLabel = new JLabel(productName);
-        JLabel priceLabel = new JLabel("$" + productPriceStr);
-        JButton addButton = new JButton("Add to Cart");
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cart.addItem(productName, parseDouble(productPriceStr)); // Add item to the cart
-                JOptionPane.showMessageDialog(frame, productName + " added to cart!");
-            }
-        });
-
-        productPanel.add(nameLabel);
-        productPanel.add(priceLabel);
-        productPanel.add(addButton);
-        panel.add(productPanel);
-
-        // Add product panel to map
-        productPanels.put(productName, productPanel);
-        productPrices.put(productName, Double.parseDouble(productPriceStr));
-    }
-
-    /**
-     * Loads product data from a CSV file and adds corresponding panels to the panel
-     * @param panel    The panel to which product panels will be added
-     * @param filePath The path to the CSV file containing product data
-     */
     private void loadProductsFromCSV(JPanel panel, String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            boolean firstLine = true;
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        boolean firstLine = true;
 
-            while ((line = br.readLine()) != null) {
-                // Skip the header line
-                if (firstLine) {
-                    firstLine = false;
-                    continue;
-                }
-
-                String[] values = line.split(",");
-                if (values.length >= 2) {
-                    addProductToPanel(panel, values[0], values[1]);
-                }
+        while ((line = br.readLine()) != null) {
+            if (firstLine) {
+                firstLine = false; // Skip the header line
+                continue;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            String[] values = line.split(",");
+            if (values.length >= 2) {
+                addProductToPanel(panel, values[0], values[1]);
+            }
         }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
-    /**
-     * Parses a string to a double, handling NumberFormatException
-     * @param text The string to be parsed
-     * @return The parsed double value, or 0.0 if parsing fails
-     */
+    private void addProductToPanel(JPanel panel, String productName, String productPriceStr) {
+    JPanel productPanel = new JPanel();
+    productPanel.setLayout(new FlowLayout());
+
+    JLabel nameLabel = new JLabel(productName);
+    JLabel priceLabel = new JLabel("$" + productPriceStr);
+    JButton addButton = new JButton("Add to Cart");
+
+    addButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cart.addItem(productName, parseDouble(productPriceStr)); // Add item to cart
+            JOptionPane.showMessageDialog(frame, productName + " added to cart!");
+        }
+    });
+
+    productPanel.add(nameLabel);
+    productPanel.add(priceLabel);
+    productPanel.add(addButton);
+    panel.add(productPanel);
+
+    productPanels.put(productName, productPanel);
+    productPrices.put(productName, Double.parseDouble(productPriceStr));
+    }
+
     private double parseDouble(String text) {
         try {
             return Double.parseDouble(text);
