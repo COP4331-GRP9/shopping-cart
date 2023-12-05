@@ -11,10 +11,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Represents a checkout page
+ * Creates a GUI form with fields for name, email, address, and credit card information
+ * Includes a "Pay Now" button to submit the form
+ */
 public class CheckoutPage {
     private JFrame frame;
     private Cart cart;
 
+    /**
+     * Constructor for the CheckoutPage class
+     * Initializes the frame and adds all the necessary components
+     */
     public CheckoutPage(Cart cart) {
         frame = new JFrame("ebay Checkout");
         frame.setSize(600, 400);
@@ -117,11 +126,25 @@ public class CheckoutPage {
         frame.setVisible(true);
     }
 
+    /**
+     * Logs the details of a customer's purchase
+     * @param orderNumber The order number of the purchase
+     * @param email The email address of the customer
+     * @param items The items purchased by the customer
+     * @param totalAmount The total amount of the purchase.
+     */
     private void logCustomerPurchase(String orderNumber, String email, String items, double totalAmount) {
         String customerData = orderNumber + "," + email + "," + items + "," + totalAmount + "\n";
         writeToFile("customer_purchases.csv", customerData);
     }
 
+    /**
+     * Logs the details of a seller's sales
+     * @param orderNumber The order number of the sale
+     * @param email The email address of the seller
+     * @param items The items sold by the seller
+     * @param totalAmount The total amount of the sale
+     */
     private void logSellerSales(String orderNumber, String email, String items, double totalAmount) {
         Map<String, Double> productCosts = readProductCosts();
         double totalProfit = 0.0;
@@ -141,6 +164,11 @@ public class CheckoutPage {
         writeToFile("seller_sales.csv", sellerData);
     }
 
+    /**
+     * Writes data to a file
+     * @param fileName The name of the file to write to
+     * @param data The data to write to the file
+     */
     private void writeToFile(String fileName, String data) {
         try (FileWriter fw = new FileWriter(fileName, true); BufferedWriter bw = new BufferedWriter(fw)) {
             bw.write(data);
@@ -149,14 +177,26 @@ public class CheckoutPage {
         }
     }
 
+    /**
+     * Gets the description of the items purchased.
+     * @return A string describing the items purchased.
+     */
     private String getItemsPurchased() {
         return cart.getItemsDescription(); // This method needs to be implemented in Cart class
     }
 
+    /**
+     * Gets the total amount of the purchase
+     * @return The total amount of the purchase
+     */
     private double getTotalAmount() {
         return cart.getTotalAmount(); // This method needs to be implemented in Cart class
     }
 
+    /**
+     * Reads the costs of the products from a file
+     * @return A map with the product names as keys and their costs as values
+     */
     private Map<String, Double> readProductCosts() {
         Map<String, Double> productCosts = new HashMap<>();
         String line;
@@ -181,6 +221,11 @@ public class CheckoutPage {
         return productCosts;
     }
 
+    /**
+     * Checks if all fields in a form are filled
+     * @param fields The fields to check
+     * @return True if all fields are filled, false otherwise
+     */
     private boolean areAllFieldsFilled(JTextField... fields) {
         for (JTextField field : fields) {
             if (field.getText().trim().isEmpty()) {
@@ -190,6 +235,11 @@ public class CheckoutPage {
         return true;
     }
 
+    /**
+     * Checks if a string can be parsed to a number
+     * @param text The string to check
+     * @return True if the string can be parsed to a number, false otherwise
+     */
     private boolean isNumeric(String text) {
         try {
             Double.parseDouble(text);
