@@ -1,5 +1,7 @@
 
 
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -63,6 +65,7 @@ public class LoginWindow {
         loginButton = new JButton("Login");
         loginButton.setBackground(new Color(255, 255, 255));
         loginButton.setForeground(Color.BLACK); // Black text
+        
         loginButton.setFocusPainted(false);
         panel.add(loginButton, gbc);
 
@@ -100,9 +103,5 @@ public class LoginWindow {
     private boolean isValidSellerCredentials(String username, String password) {
         // Placeholder validation logic for seller
         return "s".equals(username) && "s".equals(password);
-    }
-
-    public static void main(String[] args) {
-        new LoginWindow();
     }
 }
