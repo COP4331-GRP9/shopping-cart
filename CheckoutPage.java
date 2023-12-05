@@ -1,5 +1,4 @@
 
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 
 public class CheckoutPage {
     private JFrame frame;
@@ -74,8 +72,10 @@ public class CheckoutPage {
 
         /**
          * Creates a "Pay Now" button and adds an action listener to it
-         * When the button is clicked, it checks if all fields are filled and if the card number is numeric
-         * If yes, it shows a message dialog saying "Payment Processed!" and closes the checkout window
+         * When the button is clicked, it checks if all fields are filled and if the
+         * card number is numeric
+         * If yes, it shows a message dialog saying "Payment Processed!" and closes the
+         * checkout window
          * If not, it shows a message dialog saying "Please fill all fields correctly."
          */
         JButton payNowButton = new JButton("Pay Now");
@@ -83,6 +83,19 @@ public class CheckoutPage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Perform validation here
+                if (!(areAllFieldsFilled(
+                        nameField,
+                        emailField,
+                        addressField,
+                        cityField,
+                        stateField,
+                        zipField,
+                        cardNumberField) &&
+                        isNumeric(cardNumberField.getText()) &&
+                        isNumeric(cardNumberCVVField.getText()))) {
+                    JOptionPane.showMessageDialog(frame, "Please fill all fields correctly.");
+                    return;
+                }
 
                 String itemsPurchased = getItemsPurchased();
                 double totalAmount = getTotalAmount();
@@ -107,25 +120,25 @@ public class CheckoutPage {
         String customerData = orderNumber + "," + email + "," + items + "," + totalAmount + "\n";
         writeToFile("customer_purchases.csv", customerData);
     }
-    
+
     private void logSellerSales(String orderNumber, String email, String items, double totalAmount) {
         Map<String, Double> productCosts = readProductCosts();
         double totalProfit = 0.0;
-    
+
         // Split the purchased items to calculate the profit for each
         String[] purchasedItems = items.split(", ");
         for (String item : purchasedItems) {
             String itemName = item.split(" \\(Qty: ")[0]; // Assuming item format is "ItemName (Qty: X)"
-            double sellingPrice = cart.getProductPrice(itemName); // Assuming Cart class has a method to get the price of a product
+            double sellingPrice = cart.getProductPrice(itemName); // Assuming Cart class has a method to get the price
+                                                                  // of a product
             double costPrice = productCosts.getOrDefault(itemName, 0.0);
             double profit = sellingPrice - costPrice;
             totalProfit += profit;
         }
-    
+
         String sellerData = orderNumber + "," + email + "," + items + "," + totalAmount + "," + totalProfit + "\n";
         writeToFile("seller_sales.csv", sellerData);
     }
-      
 
     private void writeToFile(String fileName, String data) {
         try (FileWriter fw = new FileWriter(fileName, true); BufferedWriter bw = new BufferedWriter(fw)) {
@@ -147,7 +160,7 @@ public class CheckoutPage {
         Map<String, Double> productCosts = new HashMap<>();
         String line;
         boolean firstLine = true; // Flag to identify the first line (header)
-    
+
         try (BufferedReader br = new BufferedReader(new FileReader("products.csv"))) {
             while ((line = br.readLine()) != null) {
                 if (firstLine) {
@@ -166,5 +179,23 @@ public class CheckoutPage {
         }
         return productCosts;
     }
-    
+
+    private boolean areAllFieldsFilled(JTextField... fields) {
+        for (JTextField field : fields) {
+            if (field.getText().trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isNumeric(String text) {
+        try {
+            Double.parseDouble(text);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
 }
