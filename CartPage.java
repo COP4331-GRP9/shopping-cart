@@ -6,7 +6,8 @@ import java.awt.event.ActionListener;
 /**
  * This class represents the Cart Page in the shopping cart application
  * It displays the items in the cart, their quantity, and the total price
- * It also provides the option to remove items from the cart and proceed to checkout
+ * It also provides the option to remove items from the cart and proceed to
+ * checkout
  */
 public class CartPage {
     private JFrame frame;
@@ -16,6 +17,7 @@ public class CartPage {
     /**
      * Constructor for the CartPage class
      * Initializes the frame, sets its properties, and adds components to it
+     *
      * @param cart the cart object containing the items to be displayed
      */
     public CartPage(Cart cart) {
@@ -38,7 +40,7 @@ public class CartPage {
             itemPanel.setLayout(new FlowLayout());
 
             JLabel itemLabel = new JLabel(item.name);
-            JLabel priceLabel = new JLabel("$" + item.price.toString());
+            JLabel priceLabel = new JLabel("$" + String.format("%.2f", item.price * cart.getItemQuantity(item)));
             JLabel quantityLabel = new JLabel("Qty: " + cart.getItemQuantity(item));
             JButton removeButton = new JButton("Remove");
 
@@ -69,7 +71,7 @@ public class CartPage {
                 new CheckoutPage(cart); // Pass the cart object to the CheckoutPage
             }
         });
-        
+
         // Disable the checkout button if the cart is empty
         checkoutButton.setEnabled(!cart.getItems().isEmpty());
 

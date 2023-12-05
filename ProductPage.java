@@ -1,5 +1,4 @@
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -86,15 +85,21 @@ public class ProductPage {
         panel.add(searchPanel, gbc);
     }
 
-    private void setupSearchButtonListener(JTextField searchField, JTextField minPriceField, JTextField maxPriceField, JButton searchButton) {
+    private void setupSearchButtonListener(JTextField searchField, JTextField minPriceField, JTextField maxPriceField,
+            JButton searchButton) {
         searchButton.addActionListener(e -> {
             String searchText = searchField.getText().toLowerCase();
-            double minPrice = parseDouble(minPriceField.getText());
-            double maxPrice = parseDouble(maxPriceField.getText());
+
+            // Use 0 as default for minPrice if the field is empty
+            double minPrice = minPriceField.getText().isEmpty() ? 0.0 : parseDouble(minPriceField.getText());
+
+            // Use a very high number as default for maxPrice if the field is empty
+            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE
+                    : parseDouble(maxPriceField.getText());
 
             for (Map.Entry<String, JPanel> entry : productPanels.entrySet()) {
                 boolean nameMatches = entry.getKey().toLowerCase().contains(searchText);
-                double price = productPrices.get(entry.getKey());
+                double price = productPrices.getOrDefault(entry.getKey(), 0.0);
                 boolean priceMatches = (price >= minPrice) && (price <= maxPrice);
 
                 entry.getValue().setVisible(nameMatches && priceMatches);
@@ -156,5 +161,6 @@ public class ProductPage {
         }
     }
 
-    // Main method and other classes like Cart, CartPage, AccountPage are assumed to be defined elsewhere
+    // Main method and other classes like Cart, CartPage, AccountPage are assumed to
+    // be defined elsewhere
 }
