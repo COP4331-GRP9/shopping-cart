@@ -7,12 +7,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Represents a login window for a shopping cart application
+ */
 public class LoginWindow {
     private JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
 
+    /**
+     * Constructor for the LoginWindow class
+     * Initializes the frame and its components
+     */
     public LoginWindow() {
         frame = new JFrame("ebay");
         frame.setSize(400, 250);
@@ -41,6 +48,11 @@ public class LoginWindow {
         frame.setVisible(true);
     }
 
+    /**
+     * Places components on the panel
+     * @param panel The JPanel to add components to
+     * @param gbc The GridBagConstraints to use for layout
+     */
     private void placeComponents(JPanel panel, GridBagConstraints gbc) {
         gbc.insets = new Insets(4, 4, 4, 4); // Margin around components
         gbc.gridx = 0;
@@ -77,6 +89,10 @@ public class LoginWindow {
         });
     }
 
+    /**
+     * Handles the login process when the login button is clicked
+     * Validates the entered username and password
+     */
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -95,11 +111,23 @@ public class LoginWindow {
         new ProductPage(role); // Open the product page with the user role
     }
 
+    /**
+     * Checks if the entered credentials are valid for a customer
+     * @param username The entered username
+     * @param password The entered password
+     * @return true if the credentials are valid, false otherwise
+     */
     private boolean isValidCustomerCredentials(String username, String password) {
         // Placeholder validation logic for customer
         return "c".equals(username) && "c".equals(password);
     }
 
+    /**
+     * Checks if the entered credentials are valid for a seller
+     * @param username The entered username
+     * @param password The entered password
+     * @return true if the credentials are valid, false otherwise
+     */
     private boolean isValidSellerCredentials(String username, String password) {
         // Placeholder validation logic for seller
         return "s".equals(username) && "s".equals(password);
