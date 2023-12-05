@@ -92,6 +92,7 @@ public class CheckoutPage {
                         zipField,
                         cardNumberField) &&
                         isNumeric(cardNumberField.getText()) &&
+                        isNumeric(zipField.getText()) &&
                         isNumeric(cardNumberCVVField.getText()))) {
                     JOptionPane.showMessageDialog(frame, "Please fill all fields correctly.");
                     return;
