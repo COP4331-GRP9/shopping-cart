@@ -1,4 +1,7 @@
 
+/**
+* Main method for launching the shopping cart application
+*/
 
 public class Main {
     public static void main(String[] args) {
