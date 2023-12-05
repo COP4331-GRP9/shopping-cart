@@ -121,7 +121,7 @@ public class ProductPage {
                 String[] values = line.split(",");
                 if (values.length >= 2) {
                     gbc.gridy++;
-                    addProductToPanel(panel, values[0], values[1], gbc);
+                    addProductToPanel(panel, values[0], values[1], values[3], gbc);
                 }
             }
         } catch (IOException e) {
@@ -129,10 +129,23 @@ public class ProductPage {
         }
     }
 
-    private void addProductToPanel(JPanel panel, String productName, String productPriceStr, GridBagConstraints gbc) {
+    private void addProductToPanel(
+            JPanel panel,
+            String productName,
+            String productPriceStr,
+            String imageFileName,
+            GridBagConstraints gbc) {
         JPanel productPanel = new JPanel(new FlowLayout());
         productPanel.setBackground(Color.WHITE); // White background for product panels
         productPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // Subtle border
+
+        // Load and display the image
+        ImageIcon originalIcon = new ImageIcon(imageFileName);
+        Image image = originalIcon.getImage();
+        Image newimg = image.getScaledInstance(25, 25, java.awt.Image.SCALE_SMOOTH); // Scale it to fit your layout
+        ImageIcon imageIcon = new ImageIcon(newimg);
+        JLabel imageLabel = new JLabel();
+        imageLabel.setIcon(imageIcon);
 
         JLabel nameLabel = new JLabel(productName);
         JLabel priceLabel = new JLabel("$" + productPriceStr);
@@ -143,6 +156,7 @@ public class ProductPage {
             JOptionPane.showMessageDialog(frame, productName + " added to cart!");
         });
 
+        productPanel.add(imageLabel);
         productPanel.add(nameLabel);
         productPanel.add(priceLabel);
         productPanel.add(addButton);
@@ -160,7 +174,4 @@ public class ProductPage {
             return 0.0;
         }
     }
-
-    // Main method and other classes like Cart, CartPage, AccountPage are assumed to
-    // be defined elsewhere
 }
