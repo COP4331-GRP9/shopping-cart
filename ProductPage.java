@@ -8,12 +8,34 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The ProductPage class represents a graphical user interface for displaying
+ * a list of products, allowing users to search and add items to a shopping cart
+ */
 public class ProductPage {
+    /**
+     * The main frame for the product page
+     */
     private JFrame frame;
+
+    /**
+     * The shopping cart associated with the product page
+     */
     private Cart cart; // Assuming a Cart class exists
+
+    /**
+     * A map to store product names and their corresponding panels
+     */
     private Map<String, JPanel> productPanels; // Map to store product names and their panels
+
+    /**
+     * A map to store product names and their prices
+     */
     private Map<String, Double> productPrices; // Map to store product names and their prices
 
+    /**
+     * Constructs a new ProductPage, initializing the frame, cart, and data structures
+     */
     public ProductPage() {
         frame = new JFrame("Product Page");
         frame.setSize(600, 600);
@@ -75,6 +97,13 @@ public class ProductPage {
         frame.setVisible(true);
     }
 
+    /**
+     * Adds a product to the specified panel, creating a panel with product information
+     * Also updates the productPanels and productPrices maps
+     * @param panel            The panel to which the product panel will be added
+     * @param productName      The name of the product
+     * @param productPriceStr  The string representation of the product price
+     */
     private void addProductToPanel(JPanel panel, String productName, String productPriceStr) {
         JPanel productPanel = new JPanel();
         productPanel.setLayout(new FlowLayout());
@@ -101,6 +130,11 @@ public class ProductPage {
         productPrices.put(productName, Double.parseDouble(productPriceStr));
     }
 
+    /**
+     * Loads product data from a CSV file and adds corresponding panels to the panel
+     * @param panel    The panel to which product panels will be added
+     * @param filePath The path to the CSV file containing product data
+     */
     private void loadProductsFromCSV(JPanel panel, String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -123,6 +157,11 @@ public class ProductPage {
         }
     }
 
+    /**
+     * Parses a string to a double, handling NumberFormatException
+     * @param text The string to be parsed
+     * @return The parsed double value, or 0.0 if parsing fails
+     */
     private double parseDouble(String text) {
         try {
             return Double.parseDouble(text);
