@@ -1,5 +1,7 @@
 
 
+
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,6 +32,14 @@ public class ProductPage {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         frame.add(panel);
+
+        // Welcome label
+        JLabel welcomeLabel = new JLabel("Welcome back, " + (userRole.equals("seller") ? "seller!" : "customer!"));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Align to the bottom left
+        panel.add(Box.createVerticalGlue()); // This pushes the label to the bottom
+        panel.add(welcomeLabel);
+
+        frame.setVisible(true);
 
         // Search panel setup
         setupSearchPanel(panel);
