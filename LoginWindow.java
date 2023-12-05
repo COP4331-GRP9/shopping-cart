@@ -13,7 +13,7 @@ public class LoginWindow {
 
     public LoginWindow() {
         frame = new JFrame("ebay");
-        frame.setSize(350, 200);
+        frame.setSize(400, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame
 

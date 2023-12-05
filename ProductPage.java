@@ -3,7 +3,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,62 +17,58 @@ public class ProductPage {
     private String userRole; // Variable to store the user role
 
     public ProductPage(String userRole) {
-        this.userRole = userRole; // Initialize the user role
-        frame = new JFrame("ebay");
-        frame.setSize(600, 600);
+        this.userRole = userRole;
+        frame = new JFrame("eBay");
+        frame.setSize(800, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null); // Center the frame
+        frame.setLocationRelativeTo(null);
 
         // Set the icon
         ImageIcon icon = new ImageIcon("logo.png"); // Relative path to the logo
         frame.setIconImage(icon.getImage());
 
-        cart = new Cart(); // Initialize the cart
+        cart = new Cart();
         productPanels = new HashMap<>();
         productPrices = new HashMap<>();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        frame.add(panel);
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Increased empty border
+        mainPanel.setBackground(new Color(245, 245, 245));
+        frame.add(mainPanel);
 
-        // Welcome label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 0, 10, 0); // Increased insets for spacing between components
+
         JLabel welcomeLabel = new JLabel("Welcome back, " + (userRole.equals("seller") ? "seller!" : "customer!"));
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Align to the bottom left
-        panel.add(Box.createVerticalGlue()); // This pushes the label to the bottom
-        panel.add(welcomeLabel);
+        mainPanel.add(welcomeLabel, gbc);
 
-        frame.setVisible(true);
+        gbc.gridy++;
+        setupSearchPanel(mainPanel, gbc);
 
-        // Search panel setup
-        setupSearchPanel(panel);
+        gbc.gridy++;
+        loadProductsFromCSV(mainPanel, "./products.csv", gbc);
 
-        loadProductsFromCSV(panel, "./products.csv");
-
-        // Button to view cart
+        gbc.gridy++;
         JButton viewCartButton = new JButton("View Cart");
-        viewCartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CartPage(cart); // Open the cart page
-            }
-        });
-        panel.add(viewCartButton);
+        viewCartButton.addActionListener(e -> new CartPage(cart));
+        mainPanel.add(viewCartButton, gbc);
 
-        // Account button
+        gbc.gridy++;
         JButton accountButton = new JButton("Account");
-        accountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new AccountPage(userRole); // Open the account page with the user role
-            }
-        });
-        panel.add(accountButton);
+        accountButton.addActionListener(e -> new AccountPage(userRole));
+        mainPanel.add(accountButton, gbc);
 
         frame.setVisible(true);
     }
 
-    private void setupSearchPanel(JPanel panel) {
-        JPanel searchPanel = new JPanel();
+    private void setupSearchPanel(JPanel panel, GridBagConstraints gbc) {
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Increased hgap and vgap
+        searchPanel.setBackground(new Color(245, 245, 245));
+
         JTextField searchField = new JTextField(20);
         JTextField minPriceField = new JTextField(5);
         JTextField maxPriceField = new JTextField(5);
@@ -86,74 +81,71 @@ public class ProductPage {
         searchPanel.add(new JLabel("Max Price:"));
         searchPanel.add(maxPriceField);
         searchPanel.add(searchButton);
-        panel.add(searchPanel);
 
         setupSearchButtonListener(searchField, minPriceField, maxPriceField, searchButton);
+        panel.add(searchPanel, gbc);
     }
 
     private void setupSearchButtonListener(JTextField searchField, JTextField minPriceField, JTextField maxPriceField, JButton searchButton) {
-        searchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchText = searchField.getText().toLowerCase();
-                double minPrice = parseDouble(minPriceField.getText());
-                double maxPrice = parseDouble(maxPriceField.getText());
+        searchButton.addActionListener(e -> {
+            String searchText = searchField.getText().toLowerCase();
+            double minPrice = parseDouble(minPriceField.getText());
+            double maxPrice = parseDouble(maxPriceField.getText());
 
-                for (Map.Entry<String, JPanel> entry : productPanels.entrySet()) {
-                    boolean nameMatches = entry.getKey().toLowerCase().contains(searchText);
-                    double price = productPrices.get(entry.getKey());
-                    boolean priceMatches = (price >= minPrice) && (price <= maxPrice);
+            for (Map.Entry<String, JPanel> entry : productPanels.entrySet()) {
+                boolean nameMatches = entry.getKey().toLowerCase().contains(searchText);
+                double price = productPrices.get(entry.getKey());
+                boolean priceMatches = (price >= minPrice) && (price <= maxPrice);
 
-                    entry.getValue().setVisible(nameMatches && priceMatches);
-                }
+                entry.getValue().setVisible(nameMatches && priceMatches);
             }
         });
     }
 
-    private void loadProductsFromCSV(JPanel panel, String filePath) {
-    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        boolean firstLine = true;
+    private void loadProductsFromCSV(JPanel panel, String filePath, GridBagConstraints gbc) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean firstLine = true;
 
-        while ((line = br.readLine()) != null) {
-            if (firstLine) {
-                firstLine = false; // Skip the header line
-                continue;
-            }
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false; // Skip the header line
+                    continue;
+                }
 
-            String[] values = line.split(",");
-            if (values.length >= 2) {
-                addProductToPanel(panel, values[0], values[1]);
+                String[] values = line.split(",");
+                if (values.length >= 2) {
+                    gbc.gridy++;
+                    addProductToPanel(panel, values[0], values[1], gbc);
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
     }
 
-    private void addProductToPanel(JPanel panel, String productName, String productPriceStr) {
-    JPanel productPanel = new JPanel();
-    productPanel.setLayout(new FlowLayout());
+    private void addProductToPanel(JPanel panel, String productName, String productPriceStr, GridBagConstraints gbc) {
+        JPanel productPanel = new JPanel(new FlowLayout());
+        productPanel.setBackground(Color.WHITE); // White background for product panels
+        productPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY)); // Subtle border
 
-    JLabel nameLabel = new JLabel(productName);
-    JLabel priceLabel = new JLabel("$" + productPriceStr);
-    JButton addButton = new JButton("Add to Cart");
+        JLabel nameLabel = new JLabel(productName);
+        JLabel priceLabel = new JLabel("$" + productPriceStr);
+        JButton addButton = new JButton("Add to Cart");
 
-    addButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+        addButton.addActionListener(e -> {
             cart.addItem(productName, parseDouble(productPriceStr)); // Add item to cart
             JOptionPane.showMessageDialog(frame, productName + " added to cart!");
-        }
-    });
+        });
 
-    productPanel.add(nameLabel);
-    productPanel.add(priceLabel);
-    productPanel.add(addButton);
-    panel.add(productPanel);
+        productPanel.add(nameLabel);
+        productPanel.add(priceLabel);
+        productPanel.add(addButton);
 
-    productPanels.put(productName, productPanel);
-    productPrices.put(productName, Double.parseDouble(productPriceStr));
+        panel.add(productPanel, gbc);
+
+        productPanels.put(productName, productPanel);
+        productPrices.put(productName, Double.parseDouble(productPriceStr));
     }
 
     private double parseDouble(String text) {
@@ -163,4 +155,6 @@ public class ProductPage {
             return 0.0;
         }
     }
+
+    // Main method and other classes like Cart, CartPage, AccountPage are assumed to be defined elsewhere
 }
