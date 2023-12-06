@@ -1,7 +1,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class ProductPage {
     public ProductPage(String userRole) {
         this.userRole = userRole;
         frame = new JFrame("eBay");
-        frame.setSize(800, 800);
+        frame.setSize(800, 860);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
@@ -35,6 +34,14 @@ public class ProductPage {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Increased empty border
         mainPanel.setBackground(new Color(245, 245, 245));
         frame.add(mainPanel);
+
+        // Add logo panel at the top left
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.NORTHWEST; // Align to the top left corner
+        gbc.weightx = 0; // Do not allow horizontal stretching
+        gbc.insets = new Insets(-70, -50, 0, 0); // No margins
+        mainPanel.add(createLogoPanel(), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -63,6 +70,21 @@ public class ProductPage {
 
         frame.setVisible(true);
     }
+
+    private JPanel createLogoPanel() {
+        JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        logoPanel.setBackground(new Color(245, 245, 245)); // Match the background color of the main panel
+    
+        ImageIcon originalIcon = new ImageIcon("logo.png");
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(110, 50, Image.SCALE_SMOOTH); // Set the desired width and height
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+    
+        JLabel logoLabel = new JLabel(resizedIcon);
+        logoPanel.add(logoLabel);
+    
+        return logoPanel;
+    }    
 
     private void setupSearchPanel(JPanel panel, GridBagConstraints gbc) {
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10)); // Increased hgap and vgap
