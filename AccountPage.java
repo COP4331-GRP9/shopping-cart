@@ -20,7 +20,7 @@ public class AccountPage {
     public AccountPage(String userRole) {
         this.userRole = userRole;
 
-        frame = new JFrame("ebay Account");
+        frame = new JFrame("eBay Account");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame

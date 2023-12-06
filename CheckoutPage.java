@@ -25,7 +25,7 @@ public class CheckoutPage {
      * Initializes the frame and adds all the necessary components
      */
     public CheckoutPage(Cart cart) {
-        frame = new JFrame("ebay Checkout");
+        frame = new JFrame("eBay Checkout");
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame
@@ -110,8 +110,8 @@ public class CheckoutPage {
                 String itemsPurchased = getItemsPurchased();
                 double totalAmount = getTotalAmount();
 
-                // Generate an order number (could be more sophisticated in a real application)
-                String orderNumber = UUID.randomUUID().toString();
+                // Generate an order number
+                String orderNumber = generateRandomOrderNumber();
 
                 // Log customer purchase and seller sales
                 logCustomerPurchase(orderNumber, emailField.getText(), itemsPurchased, totalAmount);
@@ -124,6 +124,16 @@ public class CheckoutPage {
         panel.add(payNowButton);
 
         frame.setVisible(true);
+    }
+
+    /**
+     * Generates a random 5-digit order number
+     * @return The generated order number as a string
+     */
+    private String generateRandomOrderNumber() {
+        Random random = new Random();
+        int orderNumber = random.nextInt(90000) + 10000; // Generates a random 5-digit number
+        return String.valueOf(orderNumber);
     }
 
     /**

@@ -21,7 +21,7 @@ public class LoginWindow {
      * Initializes the frame and its components
      */
     public LoginWindow() {
-        frame = new JFrame("ebay");
+        frame = new JFrame("eBay");
         frame.setSize(400, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame

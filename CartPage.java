@@ -22,7 +22,7 @@ public class CartPage {
      */
     public CartPage(Cart cart) {
         this.cart = cart;
-        frame = new JFrame("ebay Cart");
+        frame = new JFrame("eBay Cart");
         frame.setSize(400, 300);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null); // Center the frame
