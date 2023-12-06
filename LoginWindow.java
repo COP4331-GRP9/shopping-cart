@@ -48,39 +48,47 @@ public class LoginWindow {
         frame.setVisible(true);
     }
 
-    /**
-     * Places components on the panel
-     * @param panel The JPanel to add components to
-     * @param gbc The GridBagConstraints to use for layout
-     */
     private void placeComponents(JPanel panel, GridBagConstraints gbc) {
         gbc.insets = new Insets(4, 4, 4, 4); // Margin around components
+    
+        // Load the logo and add it as a JLabel
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 2; // Span across two columns
+        gbc.anchor = GridBagConstraints.CENTER;
+        ImageIcon originalIcon = new ImageIcon("logo.png");
+        Image originalImage = originalIcon.getImage();
+        Image resizedImage = originalImage.getScaledInstance(110, 50, Image.SCALE_SMOOTH); // width and height are the new dimensions
+        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+        
+        JLabel logoLabel = new JLabel(resizedIcon);
+        panel.add(logoLabel, gbc);
+    
+        // Reset gridwidth and position for the username label
+        gbc.gridwidth = 1;
+        gbc.gridy++;
         gbc.anchor = GridBagConstraints.WEST;
-
         panel.add(new JLabel("Username:"), gbc);
-
+    
         gbc.gridy++;
         usernameField = new JTextField(20);
         panel.add(usernameField, gbc);
-
+    
         gbc.gridy++;
         panel.add(new JLabel("Password:"), gbc);
-
+    
         gbc.gridy++;
         passwordField = new JPasswordField(20);
         panel.add(passwordField, gbc);
-
+    
         gbc.gridy++;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         loginButton = new JButton("Login");
         loginButton.setBackground(new Color(255, 255, 255));
-        loginButton.setForeground(Color.BLACK); // Black text
-        
+        loginButton.setForeground(Color.BLACK);
         loginButton.setFocusPainted(false);
         panel.add(loginButton, gbc);
-
+    
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
