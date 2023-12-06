@@ -1,11 +1,11 @@
 
 
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a login window for a shopping cart application
@@ -15,6 +15,11 @@ public class LoginWindow {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
+
+    private Map<String, Integer> failedLoginAttempts = new HashMap<>();
+    private final int MAX_ATTEMPTS = 3; // Maximum failed attempts before lockout
+    private final long LOCKOUT_DURATION = 30000; // Lockout duration in milliseconds (e.g., 30000 ms = 30 seconds)
+    private Map<String, Long> lockoutTime = new HashMap<>();
 
     /**
      * Constructor for the LoginWindow class
@@ -98,25 +103,65 @@ public class LoginWindow {
     }
 
     /**
-     * Handles the login process when the login button is clicked
-     * Validates the entered username and password
+     * Handles the login process when the login button is clicked.
+     * This method first checks if the user is currently locked out due to too many failed attempts.
+     * If not locked out, it validates the entered username and password.
+     * If validation fails, it increments the failed login attempt count and potentially locks out the user.
+     * If validation succeeds, it resets the attempt count and proceeds to the product page.
      */
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-        String role;
 
-        if (isValidCustomerCredentials(username, password)) {
-            role = "customer";
-        } else if (isValidSellerCredentials(username, password)) {
-            role = "seller";
-        } else {
-            JOptionPane.showMessageDialog(frame, "Invalid username or password.");
+        // Check if user is currently locked out
+        if (isUserLockedOut(username)) {
+            JOptionPane.showMessageDialog(frame, "Account locked due to too many failed attempts. Please try again later.");
             return;
         }
 
-        frame.dispose(); // Close the login window
-        new ProductPage(role); // Open the product page with the user role
+        if (isValidCustomerCredentials(username, password) || isValidSellerCredentials(username, password)) {
+            // Successful login, reset failed attempts
+            failedLoginAttempts.remove(username);
+            lockoutTime.remove(username);
+
+            // Proceed with normal login
+            frame.dispose();
+            new ProductPage(username.equals("c") ? "customer" : "seller");
+        } else {
+            // Failed login, increase attempt count
+            int attempts = failedLoginAttempts.getOrDefault(username, 0);
+            failedLoginAttempts.put(username, attempts + 1);
+
+            if (attempts + 1 >= MAX_ATTEMPTS) {
+                // Lock out the user
+                lockoutTime.put(username, System.currentTimeMillis() + LOCKOUT_DURATION);
+                JOptionPane.showMessageDialog(frame, "Too many failed attempts. Account locked for 30 seconds.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid username or password.");
+            }
+        }
+    }
+
+    /**
+     * Checks if the specified user is currently locked out.
+     * A user is considered locked out if the current time is less than the stored lockout end time.
+     *
+     * @param username The username to check for lockout status.
+     * @return true if the user is currently locked out, false otherwise.
+     */
+    private boolean isUserLockedOut(String username) {
+        if (!lockoutTime.containsKey(username)) {
+            return false;
+        }
+
+        long lockoutEnd = lockoutTime.get(username);
+        if (System.currentTimeMillis() > lockoutEnd) {
+            // Lockout period has ended
+            lockoutTime.remove(username);
+            return false;
+        }
+
+        return true;
     }
 
     /**
