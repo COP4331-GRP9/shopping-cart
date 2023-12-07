@@ -3,16 +3,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * A Checkout window for the shopping cart application.
+ * A simple Swing application for handling the checkout process.
  */
 public class Checkout {
+
     private JFrame frame;
     private JButton checkoutButton;
     private JTextArea orderSummaryTextArea;
 
     /**
-     * Constructor for the Checkout class
-     * It initializes the GUI on the Event Dispatch Thread
+     * Constructs the Checkout application.
      */
     public Checkout() {
         SwingUtilities.invokeLater(() -> {
@@ -21,7 +21,7 @@ public class Checkout {
     }
 
     /**
-     * Sets up the GUI components and makes the frame visible
+     * Creates and displays the GUI.
      */
     private void createAndShowGUI() {
         frame = new JFrame("Checkout");
@@ -36,8 +36,9 @@ public class Checkout {
     }
 
     /**
-     * This method adds components to the panel
-     * @param panel The panel to which components are added
+     * Places components on the panel.
+     *
+     * @param panel The panel to which components are added.
      */
     private void placeComponents(JPanel panel) {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -49,10 +50,6 @@ public class Checkout {
         panel.add(orderSummaryTextArea);
 
         checkoutButton.addActionListener(new ActionListener() {
-            /**
-             * Defines the action to be taken when the checkout button is clicked
-             * @param e The event that triggers this action
-             */
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Add logic for processing the order and updating inventory
@@ -62,8 +59,9 @@ public class Checkout {
     }
 
     /**
-     * The main method that launches the Checkout window
-     * @param args Command-line arguments. Not used in this application
+     * The main method to launch the Checkout application.
+     *
+     * @param args The command-line arguments (not used in this application).
      */
     public static void main(String[] args) {
         new Checkout();
